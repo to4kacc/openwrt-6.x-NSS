@@ -22,10 +22,8 @@ extern struct rtl83xx_soc_info soc_info;
 extern struct mutex smi_lock;
 extern int phy_package_port_write_paged(struct phy_device *phydev, int port, int page, u32 regnum, u16 val);
 extern int phy_package_write_paged(struct phy_device *phydev, int page, u32 regnum, u16 val);
-extern int phy_port_write_paged(struct phy_device *phydev, int port, int page, u32 regnum, u16 val);
 extern int phy_package_port_read_paged(struct phy_device *phydev, int port, int page, u32 regnum);
 extern int phy_package_read_paged(struct phy_device *phydev, int page, u32 regnum);
-extern int phy_port_read_paged(struct phy_device *phydev, int port, int page, u32 regnum);
 
 #define PHY_PAGE_2	2
 #define PHY_PAGE_4	4
@@ -40,6 +38,7 @@ extern int phy_port_read_paged(struct phy_device *phydev, int port, int page, u3
 #define RTL821X_PAGE_MAC		0x0a43
 #define RTL821X_PAGE_STATE		0x0b80
 #define RTL821X_PAGE_PATCH		0x0b82
+#define RTL821X_MAC_SDS_PAGE(sds, page)	(0x404 + (sds) * 0x20 + (page))
 
 /* Using the special page 0xfff with the MDIO controller found in
  * RealTek SoCs allows to access the PHY in RAW mode, ie. bypassing
@@ -157,9 +156,9 @@ static int resume_polling(u64 saved_state)
 
 static int rtl821x_match_phy_device(struct phy_device *phydev)
 {
-	u64 poll_state;
-	int rawpage, port = phydev->mdio.addr & ~3;
-	int oldpage, chip_mode, chip_cfg_mode;
+	int oldpage, oldxpage, chip_mode, chip_cfg_mode;
+	struct mii_bus *bus = phydev->mdio.bus;
+	int addr = phydev->mdio.addr & ~3;
 
 	if (phydev->phy_id == PHY_ID_RTL8218B_E)
 		return PHY_IS_RTL8218B_E;
@@ -167,36 +166,27 @@ static int rtl821x_match_phy_device(struct phy_device *phydev)
 	if (phydev->phy_id != PHY_ID_RTL8214_OR_8218)
 		return PHY_IS_NOT_RTL821X;
 
-	if (soc_info.family == RTL8380_FAMILY_ID)
-		rawpage = RTL838X_PAGE_RAW;
-	else if (soc_info.family == RTL8390_FAMILY_ID)
-		rawpage = RTL839X_PAGE_RAW;
-	else
-		return PHY_IS_NOT_RTL821X;
-
-	poll_state = disable_polling(port);
 	/*
-	 * At this stage the write_page()/read_page() PHY functions are not yet
-	 * registered and normal paged access is not possible. The following
-	 * detection routine works because our MDIO bus has all the Realtek
-	 * PHY page handling (register 31) integrated into the port functions.
+	 * RTL8214FC and RTL8218B are the same PHYs with different configurations. That info is
+	 * stored in the first PHY of the package. In all known configurations packages start at
+	 * bus addresses that are multiples of four. Avoid paged access as this is not available
+	 * during detection.
 	 */
-	oldpage = phy_port_read_paged(phydev, port, rawpage, 31);
-	phy_port_write_paged(phydev, port, rawpage, 31, 0xa42);
-	phy_port_write_paged(phydev, port, rawpage, 29, 0x008);
-	phy_port_write_paged(phydev, port, rawpage, 31, 0x278);
-	phy_port_write_paged(phydev, port, rawpage, 18, 0x455);
-	phy_port_write_paged(phydev, port, rawpage, 31, 0x260);
-	chip_mode = phy_port_read_paged(phydev, port, rawpage, 18);
-	phy_port_write_paged(phydev, port, rawpage, 31, 0xa42);
-	phy_port_write_paged(phydev, port, rawpage, 29, 0x000);
-	phy_port_write_paged(phydev, port, rawpage, 31, oldpage);
 
-	resume_polling(poll_state);
+	oldpage = mdiobus_read(bus, addr, 0x1f);
+	oldxpage = mdiobus_read(bus, addr, 0x1e);
 
-	pr_debug("%s(%d): got chip mode %x\n", __func__, phydev->mdio.addr, chip_mode);
+	mdiobus_write(bus, addr, 0x1e, 0x8);
+	mdiobus_write(bus, addr, 0x1f, 0x278);
+	mdiobus_write(bus, addr, 0x12, 0x455);
+	mdiobus_write(bus, addr, 0x1f, 0x260);
+	chip_mode = mdiobus_read(bus, addr, 0x12);
+	dev_dbg(&phydev->mdio.dev, "got RTL8218B/RTL8214Fx chip mode %04x\n", chip_mode);
 
-	/* we checked the 4th port of a RTL8218B and got no config values */
+	mdiobus_write(bus, addr, 0x1e, oldxpage);
+	mdiobus_write(bus, addr, 0x1f, oldpage);
+
+	/* no values while reading the 5th port during 5-8th port detection of RTL8218B */
 	if (!chip_mode)
 		return PHY_IS_RTL8218B_E;
 
@@ -3822,6 +3812,55 @@ static int rtl821x_config_init(struct phy_device *phydev)
 	return 0;
 }
 
+static void rtl8218b_cmu_reset(struct phy_device *phydev, int reset_id)
+{
+	int bitpos = reset_id * 2;
+
+	/* CMU seems to have 8 pairs of reset bits that always work the same way */
+	phy_modify_paged(phydev, 0x467, 0x14, 0, BIT(bitpos));
+	phy_modify_paged(phydev, 0x467, 0x14, 0, BIT(bitpos + 1));
+	phy_write_paged(phydev, 0x467, 0x14, 0x0);
+}
+
+static int rtl8218b_config_init(struct phy_device *phydev)
+{
+	int oldpage, oldxpage;
+
+	rtl821x_config_init(phydev);
+
+	if (phydev->mdio.addr % 8)
+		return 0;
+	/*
+	 * Realtek provides two ways of initializing the PHY package. Either by U-Boot or via
+	 * vendor software and SDK. In case U-Boot setup is missing, run basic configuration
+	 * so that ports at least get link up and pass traffic.
+	 */
+
+	oldpage = phy_read(phydev, RTL8XXX_PAGE_SELECT);
+	oldxpage = phy_read(phydev, RTL821XEXT_MEDIA_PAGE_SELECT);
+	phy_write(phydev, RTL821XEXT_MEDIA_PAGE_SELECT, 0x8);
+
+	/* activate 32/40 bit redundancy algorithm for first MAC serdes */
+	phy_modify_paged(phydev, RTL821X_MAC_SDS_PAGE(0, 1), 0x14, 0, BIT(3));
+	/* magic CMU setting for stable connectivity of first MAC serdes */
+	phy_write_paged(phydev, 0x462, 0x15, 0x6e58);
+	rtl8218b_cmu_reset(phydev, 0);
+
+	for (int sds = 0; sds < 2; sds++) {
+		/* force negative clock edge */
+		phy_modify_paged(phydev, RTL821X_MAC_SDS_PAGE(sds, 0), 0x17, 0, BIT(14));
+		rtl8218b_cmu_reset(phydev, 5 + sds);
+		/* soft reset */
+		phy_modify_paged(phydev, RTL821X_MAC_SDS_PAGE(sds, 0), 0x13, 0, BIT(6));
+		phy_modify_paged(phydev, RTL821X_MAC_SDS_PAGE(sds, 0), 0x13, BIT(6), 0);
+	}
+
+	phy_write(phydev, RTL821XEXT_MEDIA_PAGE_SELECT, oldxpage);
+	phy_write(phydev, RTL8XXX_PAGE_SELECT, oldpage);
+
+	return 0;
+}
+
 static int rtl838x_serdes_probe(struct phy_device *phydev)
 {
 	int addr = phydev->mdio.addr;
@@ -3909,7 +3948,7 @@ static struct phy_driver rtl83xx_phy_driver[] = {
 	{
 		.match_phy_device = rtl8218b_ext_match_phy_device,
 		.name		= "Realtek RTL8218B (external)",
-		.config_init	= rtl821x_config_init,
+		.config_init	= rtl8218b_config_init,
 		.features	= PHY_GBIT_FEATURES,
 		.probe		= rtl8218b_ext_phy_probe,
 		.read_mmd	= rtl821x_read_mmd,
