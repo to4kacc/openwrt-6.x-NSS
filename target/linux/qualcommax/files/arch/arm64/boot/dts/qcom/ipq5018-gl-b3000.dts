@@ -13,7 +13,7 @@
 
 / {
 	model = "GL.iNet GL-B3000";
-	compatible = "glinet,gl-b3000", "qcom,ipq5018";
+	compatible ="glinet,gl-b3000", "qcom,ipq5018";
 
 	aliases {
 		ethernet1 = &dp2;
@@ -33,7 +33,7 @@
 	keys {
 		compatible = "gpio-keys";
 
-		button-reset {
+		button_reset {
 			label = "reset";
 			gpios = <&tlmm 27 GPIO_ACTIVE_LOW>;
 			linux,code = <KEY_RESTART>;
@@ -44,14 +44,12 @@
 		compatible = "gpio-leds";
 
 		led_system_blue: system-blue {
-		led_system_blue: system-blue {
 			color = <LED_COLOR_ID_BLUE>;
 			function = LED_FUNCTION_POWER;
 			gpios = <&tlmm 24 GPIO_ACTIVE_HIGH>;
 			default-state = "on";
 		};
 
-		led_status_white: status-white {
 		led_status_white: status-white {
 			color = <LED_COLOR_ID_WHITE>;
 			function = LED_FUNCTION_POWER;
