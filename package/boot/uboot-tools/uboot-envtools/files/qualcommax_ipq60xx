@@ -15,6 +15,7 @@ cambiumnetworks,xe3-4)
 	ubootenv_add_mtd "0:APPSBLENV" "0x0" "0x10000" "0x10000"
 	;;
 cmiot,ax18|\
+kt,ar06-012h|\
 qihoo,360v6|\
 redmi,ax5|\
 xiaomi,ax1800|\

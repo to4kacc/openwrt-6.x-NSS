@@ -49,6 +49,20 @@ define Device/cambiumnetworks_xe3-4
 endef
 TARGET_DEVICES += cambiumnetworks_xe3-4
 
+define Device/kt_ar06-012h
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := KT
+	DEVICE_MODEL := AR06-012H
+	DEVICE_DTS := ipq6000-kt-ar06-012h
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	SOC := ipq6000
+	DEVICE_DTS_CONFIG := config@cp03-c1
+	DEVICE_PACKAGES := ipq-wifi-kt_ar06-012h kmod-usb3 kmod-usb-dwc3 kmod-usb-dwc3-qcom kmod-usb-storage kmod-usb2 kmod-ath11k-ahb
+endef
+TARGET_DEVICES += kt_ar06-012h
+
 define Device/glinet_gl-common
 	$(call Device/FitImage)
 	$(call Device/UbiFit)
