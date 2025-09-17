@@ -6,9 +6,9 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL=$(PROJECT_GIT)/project/firmware/qca-wireless.git
-PKG_SOURCE_DATE:=2025-08-25
-PKG_SOURCE_VERSION:=a510502e7922b0a61e455e43479a62e7d27cf3ba
-PKG_MIRROR_HASH:=0b8120ce09fdd9176e77b65f2c0866e14aa580ba7e6dd9440f37011418346be7
+PKG_SOURCE_DATE:=2025-09-16
+PKG_SOURCE_VERSION:=65d951610e0c32be4512275018490616cd9334b5
+PKG_MIRROR_HASH:=e6beb7648263ba70551adf302a5bf0108d281e16d87a94675e38f2a98b406b57
 PKG_FLAGS:=nonshared
 
 include $(INCLUDE_DIR)/package.mk
@@ -40,6 +40,7 @@ ALLWIFIBOARDS:= \
 	dynalink_dl-wrx36 \
 	edgecore_eap102 \
 	edimax_cax1800 \
+	kt_ar06-012h \
 	elecom_wrc-x3000gs2 \
 	glinet_gl-ax1800 \
 	glinet_gl-axt1800 \
@@ -221,6 +222,7 @@ $(eval $(call generate-ipq-wifi-package,compex_wpq873,Compex WPQ-873))
 $(eval $(call generate-ipq-wifi-package,dynalink_dl-wrx36,Dynalink DL-WRX36))
 $(eval $(call generate-ipq-wifi-package,edgecore_eap102,Edgecore EAP102))
 $(eval $(call generate-ipq-wifi-package,edimax_cax1800,Edimax CAX1800))
+$(eval $(call generate-ipq-wifi-package,kt_ar06-012h,KT AR06-012H))
 $(eval $(call generate-ipq-wifi-package,elecom_wrc-x3000gs2,ELECOM WRC-X3000GS2))
 $(eval $(call generate-ipq-wifi-package,glinet_gl-ax1800,GL.iNet GL-AX1800))
 $(eval $(call generate-ipq-wifi-package,glinet_gl-axt1800,GL.iNet GL-AXT1800))
