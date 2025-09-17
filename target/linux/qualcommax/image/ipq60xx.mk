@@ -59,7 +59,7 @@ define Device/kt_ar06-012h
 	PAGESIZE := 2048
 	SOC := ipq6000
 	DEVICE_DTS_CONFIG := config@cp03-c1
-	DEVICE_PACKAGES := ipq-wifi-kt_ar06-012h kmod-usb3 kmod-usb-dwc3 kmod-usb-dwc3-qcom kmod-usb-storage kmod-usb2 kmod-ath11k-ahb
+	DEVICE_PACKAGES := ipq-wifi-kt_ar06-012h
 endef
 TARGET_DEVICES += kt_ar06-012h
 
