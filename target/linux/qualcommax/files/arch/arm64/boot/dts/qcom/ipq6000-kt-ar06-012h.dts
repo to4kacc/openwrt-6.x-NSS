@@ -334,10 +334,6 @@
 	vbus-supply = <&reg_usb_vbus>;
 };
 
-&rpm {
-	status = "disabled";
-};
-
 &crypto {
 	status = "okay";
 };
