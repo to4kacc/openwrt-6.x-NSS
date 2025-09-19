@@ -1,109 +1,151 @@
-# 适用于 IPQ系列设备的 OpenWrt 源码仓库
+[**[中文]**](README.md) [**[English]**](README-en.md)
 
-## 说明
->对于以前IPQ系列想要使用OpenWrt系统只能放弃部分NSS功能，亦或者使用相对老旧的内核，在开源社区的努力下完善了这部分的支持。其中本仓库中融合了[JiaY-shi](https://github.com/JiaY-shi)和[qosmio](https://github.com/qosmio)两位大佬NSS支持的代码实现了这一功能，以及使用了[ImmortalWrt](https://github.com/immortalwrt)的LuCI和Packages作为插件的支持，在此感谢大佬们的付出！
+# 适用于 IPQ 系列设备的 OpenWrt 源码仓库
 
-| Target  | NSS <br />`Matrix` | 2.4G WiFi <br />`NSS Offload` | 5G WiFi <br />`NSS Offload` |
-| :-:     | :-:     | :-:       | :-:     |
-| IPQ807X | ✅      | ✅       | ✅      |
-| IPQ60XX | ✅      | ✅       | ✅      |
-| IPQ50XX | ❌      |❌        |❌       |
+## 📖 说明
 
-## NSS功能支持矩阵
+该项目旨在为 Qualcomm IPQ 系列设备提供功能完善的 OpenWrt 系统。
 
-|   功能    | IPQ807x | IPQ60xx |   功能          | IPQ807x | IPQ60xx |
-| --------- | :-----: | :-----: | --------------- | :-----: | :-----: |
-| TUNIPIP6  |   ✅    |   ✅    | RMNET           |  🟨<sup><a href="#fn1">1</a></sup>  |  ⛔<sup><a href="#fn2">2</a></sup>  |
-| PPPOE     |   ✅    |   ✅    | MIRROR          |   ✅    |   ✅    |
-| L2TPV2    |   ✅    |   ✅    | WIFI (AP/STA)   |   ✅    |   ✅    |
-| BRIDGE    |   ✅    |   ✅    | WIFI (WDS)      |  🟨<sup><a href="#fn1">1</a></sup>  |  🟨<sup><a href="#fn1">1</a></sup>  |
-| VLAN      |   ✅    |   ✅    | WIFI (MESH)     |  🟨<sup><a href="#fn1">1</a></sup>  |  🟨<sup><a href="#fn1">1</a></sup>  |
-| MAP_T     |   ✅    |   ✅    | WIFI (AP VLAN)  |  ⚠️<sup><a href="#fn4">4</a></sup>  |  ⚠️<sup><a href="#fn4">4</a></sup>  |
-| TUN6RD    |   ✅    |   ✅    | IPSEC           |   ❌<sup><a href="#fn3">3</a></sup>  |   ❌<sup><a href="#fn3">3</a></sup>  |
-| GRE       |   ✅    |   ✅    | PVXLAN          |   ❌<sup><a href="#fn3">3</a></sup>  |   ❌<sup><a href="#fn3">3</a></sup>  |
-| PPTP      |   ✅    |   ✅    | CLMAP           |   ❌<sup><a href="#fn3">3</a></sup>  |   ❌<sup><a href="#fn3">3</a></sup>  |
-| IGS       |   ✅    |   ✅    | TLS             |   ❌<sup><a href="#fn3">3</a></sup>  |   ❌<sup><a href="#fn3">3</a></sup>  |
-| VXLAN     |   ✅    |   ✅    | CAPWAP          |   ❌<sup><a href="#fn3">3</a></sup>  |   ❌<sup><a href="#fn3">3</a></sup>  |
-| MATCH     |   ✅    |   ✅    | DTLS            |   ❌<sup><a href="#fn3">3</a></sup>  |   ❌<sup><a href="#fn3">3</a></sup>  |
+在开源社区的共同努力下，本项目解决了以往 IPQ 系列设备在使用 OpenWrt 时，需放弃部分 NSS 功能或使用老旧内核的问题。我们特别融合了 [**JiaY-shi**](https://github.com/JiaY-shi) 和 [**qosmio**](https://github.com/qosmio) 两位开发者的 NSS 支持代码，并采用 [**ImmortalWrt**](https://github.com/immortalwrt) 的 LuCI 和 Packages 作为插件支持。
 
-<a id="fn1"></a><sup>1</sup> 🟨 需要**NSS固件11.4版本​**（CONFIG_NSS_FIRMWARE_VERSION_11_4=y）  
-<a id="fn2"></a><sup>2</sup> ⛔ 在该平台上不可用  
-<a id="fn3"></a><sup>3</sup> ❌ ​在NSS固件(11.4–12.5)版本中不可用  
-<a id="fn4"></a><sup>4</sup> ⚠️ ​在ath11k驱动程序中存在故障​  
+在此，向所有贡献者表示衷心的感谢！
 
-## Wiki
-- [什么是NSS？](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#whats-nss)
-- [OpenWrt如何“分载”流量？](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#how-does-openwrt-offload-traffic)
-- [NSS与OpenWrt的“分载”选项有何不同？](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#how-is-nss-different-from-openwrts-offloading-options)
-- [我需要NSS吗？](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#do-i-need-nss)
-- [我的设备支持NSS吗？](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#ok-i-want-nss-does-my-device-support-it)
-- [重要提示！](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#important-note)
+### 🎯 设备支持概览
+| Target | NSS 功能 | 2.4G WiFi (NSS Offload) | 5G WiFi (NSS Offload) |
+| :----: |:--------:|:-----------------------:|:---------------------:|
+| IPQ807X| ✅       | ✅                      | ✅                    |
+| IPQ60XX| ✅       | ✅                      | ✅                    |
+| IPQ50XX| ❌       | ❌                      | ❌                    |
 
 ---
 
-## 使用方法
+## ✨ NSS 功能支持矩阵
 
-### [云编译1](https://github.com/breeze303/openwrt-ci) [云编译2](https://github.com/ZqinKing/wrt_release) [云编译3](https://github.com/laipeng668/openwrt-ci-roc) [云编译4](https://github.com/VIKINGYFY/OpenWRT-CI)
+| 功能 | IPQ807x | IPQ60xx | 功能 | IPQ807x | IPQ60xx |
+| :--- | :---: | :---: | :--- | :---: | :---: |
+| TUNIPIP6 | ✅ | ✅ | RMNET | 🟨¹ | ⛔² |
+| PPPOE | ✅ | ✅ | MIRROR | ✅ | ✅ |
+| L2TPV2 | ✅ | ✅ | WIFI (AP/STA) | ✅ | ✅ |
+| BRIDGE | ✅ | ✅ | WIFI (WDS) | 🟨¹ | 🟨¹ |
+| VLAN | ✅ | ✅ | WIFI (MESH) | 🟨¹ | 🟨¹ |
+| MAP_T | ✅ | ✅ | WIFI (AP VLAN) | ⚠️⁴ | ⚠️⁴ |
+| TUN6RD | ✅ | ✅ | IPSEC | ❌³ | ❌³ |
+| GRE | ✅ | ✅ | PVXLAN | ❌³ | ❌³ |
+| PPTP | ✅ | ✅ | CLMAP | ❌³ | ❌³ |
+| IGS | ✅ | ✅ | TLS | ❌³ | ❌³ |
+| VXLAN | ✅ | ✅ | CAPWAP | ❌³ | ❌³ |
+| MATCH | ✅ | ✅ | DTLS | ❌³ | ❌³ |
+
+<br/>
+
+### **💡 图例说明**
+*   ¹ 🟨 需要 **NSS 固件 11.4 版本** (`CONFIG_NSS_FIRMWARE_VERSION_11_4=y`)
+*   ² ⛔ 在该平台上不可用
+*   ³ ❌ 在 NSS 固件 (11.4–12.5) 版本中不可用
+*   ⁴ ⚠️ 在 ath11k 驱动程序中存在故障
+
+---
+
+## 📚 Wiki & FAQ
+
+- [**什么是NSS？**](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#whats-nss)
+- [**OpenWrt如何“分载”流量？**](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#how-does-openwrt-offload-traffic)
+- [**NSS与OpenWrt的“分载”选项有何不同？**](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#how-is-nss-different-from-openwrts-offloading-options)
+- [**我需要NSS吗？**](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#do-i-need-nss)
+- [**我的设备支持NSS吗？**](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#ok-i-want-nss-does-my-device-support-it)
+- [**重要提示！**](https://github.com/qosmio/openwrt-ipq/blob/qualcommax-6.x-nss-wifi/README.md#important-note)
+
+---
+
+## 🚀 使用方法
+
+### 云编译
+
+您可以使用以下项目进行云端编译：
+
+- [**breeze303/openwrt-ci**](https://github.com/breeze303/openwrt-ci)
+- [**ZqinKing/wrt_release**](https://github.com/ZqinKing/wrt_release)
+- [**laipeng668/openwrt-ci-roc**](https://github.com/laipeng668/openwrt-ci-roc)
+- [**VIKINGYFY/OpenWRT-CI**](https://github.com/VIKINGYFY/OpenWRT-CI)
 
 ### 本地编译
 
-- **不要用 `root` 用户进行编译⚠**
-- 国内用户编译前最好准备好梯子
-- 至少需要4GB内存​​和​​25GB可用磁盘空间​
-- 默认登陆IP 192.168.1.1 密码 none
+> #### **⚠️ 注意事项**
+> - **请勿使用 `root` 用户进行编译！**
+> - **国内用户编译前建议开启网络代理。**
+> - **编译环境要求：至少 4GB 内存和 25GB 可用磁盘空间。**
+> - **默认配置：**
+>   - 登陆 IP: `192.168.1.1`
+>   - 密码: `none`
 
+#### 1. 系统环境准备
+推荐使用 **Ubuntu 22.04 LTS** 或 **Debian 11** 系统。
 
-1. 首先装好 Linux 系统，推荐使用Ubuntu 22.04 LTS 或 Debian 11
+#### 2. 安装编译依赖
+```bash
+sudo apt update -y
+sudo apt full-upgrade -y
+sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
+bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
+git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
+libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libfuse-dev libssl-dev libtool lrzsz \
+genisoimage msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip libpython3-dev qemu-utils \
+rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+```
 
-2. 安装编译依赖
+#### 3. 下载源码与配置
+```bash
+# 克隆源码
+git clone --depth 1 --single-branch https://github.com/LiBwrt-op/openwrt-6.x.git libwrt
+cd libwrt
 
-   ```bash
-   sudo apt update -y
-   sudo apt full-upgrade -y
-   sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
-   bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
-   git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
-   libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libreadline-dev libfuse-dev libssl-dev libtool lrzsz \
-   genisoimage msmtp nano ninja-build p7zip p7zip-full patch pkgconf python3 python3-pip libpython3-dev qemu-utils \
-   rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
-   ```
+# 更新 feeds
+./scripts/feeds update -a && ./scripts/feeds install -a
 
-3. 下载源代码，更新 feeds 并选择配置
+# 进入菜单配置
+make menuconfig
+```
 
-   ```bash
-   git clone --depth 1 --single-branch https://github.com/LiBwrt-op/openwrt-6.x.git libwrt
-   cd libwrt
-   ./scripts/feeds update -a && ./scripts/feeds install -a
-   make menuconfig
-   ```
+#### 4. 首次编译
+```bash
+# 下载依赖库 (多线程)
+make download -j$(nproc)
 
-4. 下载 dl 库，编译固件 （-j 后面是线程数，为便于排除错误推荐用单线程）
+# 开始编译 (建议使用单线程，方便排查错误)
+make -j1 V=s
+```
+编译完成后，固件位于 `bin/targets` 目录下。
 
-   ```bash
-   make download -j$(nproc)
-   make -j1 V=s
-   ```
+#### 5. 二次编译
+```bash
+cd libwrt
 
-5. 二次编译：
+# 拉取最新代码
+git fetch && git reset --hard origin/k6.12-nss
 
-   ```bash
-   cd libwrt
-   git fetch && git reset --hard origin/k6.12-nss
-   ./scripts/feeds update -a && ./scripts/feeds install -a
-   make defconfig
-   make -j$(nproc) V=s 
-   ```
+# 更新 feeds
+./scripts/feeds update -a && ./scripts/feeds install -a
 
-6. 如果需要重新配置：
+# 加载默认配置并编译
+make defconfig
+make -j$(nproc) V=s 
+```
 
-   ```bash
-   rm -rf .config
-   make menuconfig
-   make -j$(nproc) V=s 
-   ```
+#### 6. 重新配置
+如果需要修改配置，请执行以下命令：
+```bash
+# 清除旧配置
+rm -rf .config
 
-7. 编译完成后输出路径：bin/targets
+# 进入菜单配置
+make menuconfig
 
-### 如果你喜欢这个项目的话别忘了点个Star⭐
-## Stargazers over time
+# 开始编译
+make -j$(nproc) V=s 
+```
+---
+
+### ⭐ 支持项目
+**如果您喜欢这个项目，请在 GitHub 上点个 Star 支持一下！**
+
 [![Stargazers over time](https://starchart.cc/LiBwrt-op/openwrt-6.x.svg?variant=adaptive)](https://starchart.cc/LiBwrt-op/openwrt-6.x)
