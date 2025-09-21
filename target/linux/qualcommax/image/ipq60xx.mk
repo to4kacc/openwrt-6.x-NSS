@@ -63,6 +63,20 @@ define Device/kt_ar06-012h
 endef
 TARGET_DEVICES += kt_ar06-012h
 
+define Device/lg_gapd-7500
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := LG
+	DEVICE_MODEL := GAPD-7500
+  DEVICE_DTS := ipq6000-lg-gapd-7500
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	SOC := ipq6000
+	DEVICE_DTS_CONFIG := config@cp03-c1
+	DEVICE_PACKAGES := ipq-wifi-lg_gapd-7500 kmod-switch-rtl8367b
+endef
+TARGET_DEVICES += lg_gapd-7500
+
 define Device/glinet_gl-common
 	$(call Device/FitImage)
 	$(call Device/UbiFit)

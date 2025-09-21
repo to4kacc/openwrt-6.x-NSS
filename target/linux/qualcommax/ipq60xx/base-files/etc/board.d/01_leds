@@ -47,6 +47,16 @@ yuncore,fap650)
 	ucidef_set_led_netdev "wlan5ghz" "WLAN 5GHz LED" "blue:wlan-5ghz" "wlan0"
 	ucidef_set_led_netdev "wlan2ghz" "WLAN 2.4GHz LED" "green:wlan-2ghz" "wlan1"
 	;;
+lg,gapd-7500)
+	ucidef_set_led_netdev "lan1-port-link" "LAN1-PORT-LINK" "90000.mdio-1:01:green:lan" "lan1" "link_10 link_100 link_1000"
+	ucidef_set_led_netdev "lan1-port-traffic" "LAN1-PORT-TRAFFIC" "90000.mdio-1:01:orange:lan" "lan1" "tx rx link_10 link_100 link_1000"
+	ucidef_set_led_netdev "lan2-port-link" "LAN2-PORT-LINK" "90000.mdio-1:02:green:lan" "lan2" "link_10 link_100 link_1000"
+	ucidef_set_led_netdev "lan2-port-traffic" "LAN2-PORT-TRAFFIC" "90000.mdio-1:02:orange:lan" "lan2" "tx rx link_10 link_100 link_1000"
+	ucidef_set_led_netdev "wan-port-link" "WAN-PORT-LINK" "90000.mdio-1:03:green:wan" "wan" "link_10 link_100 link_1000"
+	ucidef_set_led_netdev "wan-port-traffic" "WAN-PORT-TRAFFIC" "90000.mdio-1:03:orange:wan" "wan" "tx rx link_10 link_100 link_1000"
+	ucidef_set_led_netdev "wlan2g" "WLAN2G" "green:wlan2g" "phy1-ap0" "tx rx link"
+	ucidef_set_led_netdev "wlan5g" "WLAN5G" "green:wlan5g" "phy0-ap0" "tx rx link"
+	;;
 kt,ar06-012h)
 	ucidef_set_led_netdev "lan1-port-link" "LAN1-PORT-LINK-TRAFFIC" "90000.mdio-1:04:green:lan" "lan1" "link link_10 link_100 link_1000 half_duplex full_duplex tx rx"
 	ucidef_set_led_netdev "lan2-port-link" "LAN2-PORT-LINK-TRAFFIC" "90000.mdio-1:03:green:lan" "lan2" "link link_10 link_100 link_1000 half_duplex full_duplex tx rx"
