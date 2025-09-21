@@ -16,7 +16,7 @@
 
 	aliases {
 		serial0 = &blsp1_uart3;
-		label-mac-device = &dp3;
+		label-mac-device = &dp1;
 		led-boot = &led_wan_blue;
 		led-failsafe = &led_wan_blue;
 		led-running = &led_wan_blue;
@@ -76,12 +76,7 @@
 		regulator-max-microvolt = <5000000>;
 		gpio = <&tlmm 26 GPIO_ACTIVE_HIGH>;
 		regulator-boot-on;
-		// regulator-always-on;
-	};
-
-	output-usb0-power {
-		compatible = "regulator-output";
-		vout-supply = <&reg_usb_vbus>;
+		regulator-always-on;
 	};
 };
 
@@ -241,8 +236,8 @@
 
 &switch {
 	status = "okay";
-	switch_lan_bmp = <(ESS_PORT1 | ESS_PORT2 | ESS_PORT3 | ESS_PORT4)>;
-	switch_wan_bmp = <ESS_PORT5>;
+	switch_lan_bmp = <(ESS_PORT2 | ESS_PORT3 | ESS_PORT4 | ESS_PORT5)>;  // LAN ports
+	switch_wan_bmp = <ESS_PORT1>;  // WAN port
 	switch_mac_mode = <MAC_MODE_PSGMII>;
 
 	qcom,port_phyinfo {
