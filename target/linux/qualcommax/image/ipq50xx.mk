@@ -156,10 +156,7 @@ define Device/yuncore_ax850
 	PAGESIZE := 2048
 	SOC := ipq5018
 	DEVICE_DTS_CONFIG := config@mp03.1
-	DEVICE_PACKAGES := kmod-ath11k-pci \
-		ath11k-firmware-ipq5018 \
-		ath11k-firmware-qcn9074 \
-		ipq-wifi-yuncore_ax850
+	DEVICE_PACKAGES := ipq-wifi-yuncore_ax850 ath11k-firmware-qcn9074
 endef
 TARGET_DEVICES += yuncore_ax850
 
