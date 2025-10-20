@@ -74,6 +74,7 @@ define Device/asus_rt-ax89x
 		append-kernel | asus-fake-ramdisk |\
 		multiImage gzip $$(KDIR)/tmp/fakerd $$(KDIR)/image-$$(DEVICE_DTS).dtb |\
 		sysupgrade-tar kernel=$$$$@ | append-metadata
+ifeq ($(IB),)
 ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
 	ARTIFACTS := initramfs-factory.trx initramfs-uImage.itb
 	ARTIFACT/initramfs-uImage.itb := \
@@ -83,6 +84,7 @@ ifneq ($(CONFIG_TARGET_ROOTFS_INITRAMFS),)
 		asus-fake-rootfs xz /lib/firmware/IPQ8074A/fw_version.txt "fake" -no-compression |\
 		multiImage gzip $$(KDIR)/tmp/fakehsqs $$(KDIR)/image-$$(DEVICE_DTS).dtb |\
 		asus-trx -v 2 -n RT-AX89U -b 388 -e 49000
+endif
 endif
 endef
 TARGET_DEVICES += asus_rt-ax89x
