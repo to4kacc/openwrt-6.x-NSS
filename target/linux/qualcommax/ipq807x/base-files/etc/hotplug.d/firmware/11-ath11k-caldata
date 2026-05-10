@@ -20,6 +20,7 @@ case "$FIRMWARE" in
 	compex,wpq873|\
 	dynalink,dl-wrx36|\
 	edgecore,eap102|\
+	swaiot,s10sky|\
 	edimax,cax1800|\
 	netgear,rax120v2|\
 	netgear,rbr750|\
