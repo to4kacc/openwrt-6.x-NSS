@@ -86,6 +86,9 @@ ipq807x_setup_interfaces()
 	zyxel,nwa210ax)
 		ucidef_set_interface_lan "uplink lan1" "dhcp"
 		;;
+	swaiot,s10sky)
+		ucidef_set_interfaces_lan_wan "lan1 lan2" "wan"
+		;;
 	*)
 		echo "Unsupported hardware. Network interfaces not initialized"
 		;;
